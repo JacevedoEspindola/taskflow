@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="TaskFlow.Application/TaskFlow.Application.csproj" />
+    <Project Path="TaskFlow.Domain/TaskFlow.Domain.csproj" />
+    <Project Path="TaskFlow.Infrastructure/TaskFlow.Infrastructure.csproj" />
+  </Folder>
+  <Project Path="TaskFlow.Api/TaskFlow.Api.csproj" />
+</Solution>
