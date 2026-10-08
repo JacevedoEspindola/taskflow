@@ -60,3 +60,156 @@ TaskFlow es una API REST que permite gestionar proyectos, columnas y tareas al e
 ## 🏛️ Arquitectura
 
 El proyecto sigue **Clean Architecture**, con las dependencias apuntando siempre hacia el centro:
+┌─────────────────────────────────────────┐
+│ TaskFlow.Api │ ← Endpoints, DI, Middlewares
+├─────────────────────────────────────────┤
+│ TaskFlow.Infrastructure │ ← EF Core, JWT, BCrypt
+├─────────────────────────────────────────┤
+│ TaskFlow.Application │ ← Casos de uso, MediatR, DTOs
+├─────────────────────────────────────────┤
+│ TaskFlow.Domain │ ← Entidades, reglas de negocio
+└─────────────────────────────────────────┘
+
+### Estructura de carpetas
+
+TaskFlow/
+├── TaskFlow.Domain/
+│ └── Entities/ → User, Project, ProjectMember, BoardColumn, TaskItem
+│
+├── TaskFlow.Application/
+│ ├── Common/
+│ │ ├── Behaviors/ → ValidationBehavior (FluentValidation)
+│ │ └── Interfaces/ → IApplicationDbContext, IJwtService, IPasswordHasher, ICurrentUserService
+│ └── Features/
+│ └── Auth/
+│ ├── Commands/
+│ │ ├── Register/
+│ │ └── Login/
+│ └── Dtos/
+│
+├── TaskFlow.Infrastructure/
+│ ├── Authentication/ → JwtService, PasswordHasher, JwtSettings
+│ ├── Persistence/ → ApplicationDbContext + Configurations
+│ └── Services/ → CurrentUserService
+│
+└── TaskFlow.Api/
+├── Endpoints/ → AuthEndpoints
+└── Middleware/ → ExceptionHandlingMiddleware
+
+
+---
+
+## ✅ Funcionalidades
+
+### Implementadas
+- [x] Registro de usuarios con validación
+- [x] Login con generación de JWT
+- [x] Hash de contraseñas con BCrypt
+- [x] Validación automática con FluentValidation (pipeline de MediatR)
+- [x] Manejo global de excepciones con respuestas JSON estructuradas
+- [x] Swagger / OpenAPI documentado
+
+### En desarrollo
+- [ ] CRUD de Proyectos
+- [ ] CRUD de Columnas
+- [ ] CRUD de Tareas
+- [ ] Mover tareas entre columnas
+- [ ] SignalR (tiempo real)
+- [ ] Roles y permisos por proyecto
+
+---
+
+## 📸 Screenshots
+
+### Swagger UI
+![Swagger](docs/swagger.png)
+
+### Register exitoso
+![Register](docs/register.png)
+
+### Login exitoso
+![Login](docs/login.png)
+
+### Usuarios en la base de datos (con password hasheado)
+![SSMS](docs/ssms-users.png)
+
+### Estructura del proyecto
+![Estructura](docs/structure.png)
+
+---
+
+## 🚀 Cómo correrlo
+
+### Requisitos previos
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
+- [SQL Server Express o superior](https://www.microsoft.com/sql-server/sql-server-downloads)
+- [SQL Server Management Studio (SSMS)](https://aka.ms/ssmsfullsetup) *(opcional)*
+
+### Pasos
+
+1. **Clonar el repositorio:**
+   ```bash
+   git clone https://github.com/JacevedoEspindola/taskflow.git
+   cd taskflow
+
+2. **Configurar la cadena de conexión en TaskFlow.Api/appsettings.json :**
+   
+   "ConnectionStrings": {
+  "DefaultConnection": "Server=localhost\\SQLEXPRESS;Database=TaskFlowDb;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true"}
+
+3. **Aplicar migraciones:**
+   
+   dotnet ef database update -p TaskFlow.Infrastructure -s TaskFlow.Api
+
+4. **Correr la API:**
+
+   dotnet run --project TaskFlow.Api
+
+5. **Abrir Swagger:**
+
+   https://localhost:7236/swagger6.  
+
+
+###Probar la autenticación
+
+##Registro:
+
+POST /api/auth/register
+Content-Type: application/json
+
+{
+  "email": "user@test.com",
+  "password": "Password123",
+  "fullName": "Test User"
+}
+
+##Login:
+
+POST /api/auth/login
+Content-Type: application/json
+
+{
+  "email": "user@test.com",
+  "password": "Password123"
+}
+
+🗺️ Roadmap
+☑ Fase 1: Setup + Clean Architecture
+☑ Fase 2: Autenticación (Register + Login + JWT)
+□ Fase 3: CRUD de Proyectos
+□ Fase 4: CRUD de Columnas y Tareas
+□ Fase 5: SignalR (tiempo real)
+□ Fase 6: Frontend React + TypeScript
+□ Fase 7: Docker + CI/CD + Deploy
+
+👤 Autor
+Jose Acevedo
+
+GitHub: @JacevedoEspindola
+
+📄 Licencia
+Este proyecto está bajo la licencia MIT. Ver LICENSE para más detalles.
+
+
+---
+
