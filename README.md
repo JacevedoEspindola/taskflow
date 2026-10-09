@@ -121,20 +121,41 @@ TaskFlow/
 ## 📸 Screenshots
 
 ### Swagger UI
-![Swagger](docs/swagger.png)
+![Swagger](docs/Swagger.PNG)
 
-### Register exitoso
-![Register](docs/register.png)
+### Autenticación
 
-### Login exitoso
-![Login](docs/login.png)
+**Register exitoso:**
+![Register](docs/register.PNG)
 
-### Usuarios en la base de datos (con password hasheado)
-![SSMS](docs/ssms-users.png)
+**Login exitoso:**
+![Login](docs/02-login-success.PNG)
+
+**Usuarios en la base de datos (con password hasheado):**
+![SSMS](docs/ssms-users.PNG)
+
+### CRUD de Proyectos
+
+**Crear proyecto (con columnas automáticas):**
+![Create Project](docs/04-create-project.PNG)
+
+**Listar proyectos:**
+![List Projects](docs/05-list-projects.PNG)
+
+**Detalle de proyecto:**
+![Project Detail](docs/06-project-detail.PNG)
+
+**Actualizar proyecto:**
+![Update Project](docs/07-update-project.PNG)
+
+**Eliminar proyecto:**
+![Delete Project](docs/08-delete-project.PNG)
+
+**Endpoint protegido sin token → 401:**
+![Unauthorized](docs/10-unauthorized.PNG)
 
 ### Estructura del proyecto
-![Estructura](docs/structure.png)
-
+![Estructura](docs/structure.PNG)
 ---
 
 ## 🚀 Cómo correrlo
@@ -192,14 +213,15 @@ Content-Type: application/json
   "password": "Password123"
 }
 
-🗺️ Roadmap
-☑ Fase 1: Setup + Clean Architecture
-☑ Fase 2: Autenticación (Register + Login + JWT)
-□ Fase 3: CRUD de Proyectos
-□ Fase 4: CRUD de Columnas y Tareas
-□ Fase 5: SignalR (tiempo real)
-□ Fase 6: Frontend React + TypeScript
-□ Fase 7: Docker + CI/CD + Deploy
+## 🗺️ Roadmap
+
+- [x] **Fase 1:** Setup + Clean Architecture
+- [x] **Fase 2:** Autenticación (Register + Login + JWT)
+- [x] **Fase 3:** CRUD de Proyectos + Roles + Autorización
+- [ ] **Fase 4:** CRUD de Columnas y Tareas
+- [ ] **Fase 5:** SignalR (tiempo real)
+- [ ] **Fase 6:** Frontend React + TypeScript
+- [ ] **Fase 7:** Docker + CI/CD + Deploy
 
 👤 Autor
 Jose Acevedo
