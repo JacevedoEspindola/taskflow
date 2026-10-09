@@ -72,32 +72,31 @@ El proyecto sigue **Clean Architecture**, con las dependencias apuntando siempre
 
 ### Estructura de carpetas
 
+```
 TaskFlow/
 ├── TaskFlow.Domain/
-│ └── Entities/ → User, Project, ProjectMember, BoardColumn, TaskItem
+│   └── Entities/                → User, Project, ProjectMember, BoardColumn, TaskItem
 │
 ├── TaskFlow.Application/
-│ ├── Common/
-│ │ ├── Behaviors/ → ValidationBehavior (FluentValidation)
-│ │ └── Interfaces/ → IApplicationDbContext, IJwtService, IPasswordHasher, ICurrentUserService
-│ └── Features/
-│ └── Auth/
-│ ├── Commands/
-│ │ ├── Register/
-│ │ └── Login/
-│ └── Dtos/
+│   ├── Common/
+│   │   ├── Behaviors/           → ValidationBehavior (FluentValidation)
+│   │   └── Interfaces/          → IApplicationDbContext, IJwtService, IPasswordHasher, ICurrentUserService
+│   └── Features/
+│       └── Auth/
+│           ├── Commands/
+│           │   ├── Register/
+│           │   └── Login/
+│           └── Dtos/
 │
 ├── TaskFlow.Infrastructure/
-│ ├── Authentication/ → JwtService, PasswordHasher, JwtSettings
-│ ├── Persistence/ → ApplicationDbContext + Configurations
-│ └── Services/ → CurrentUserService
+│   ├── Authentication/          → JwtService, PasswordHasher, JwtSettings
+│   ├── Persistence/             → ApplicationDbContext + Configurations
+│   └── Services/                → CurrentUserService
 │
 └── TaskFlow.Api/
-├── Endpoints/ → AuthEndpoints
-└── Middleware/ → ExceptionHandlingMiddleware
-
-
----
+    ├── Endpoints/               → AuthEndpoints
+    └── Middleware/              → ExceptionHandlingMiddleware
+```
 
 ## ✅ Funcionalidades
 
