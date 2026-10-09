@@ -41,6 +41,12 @@ public class ExceptionHandlingMiddleware
             context.Response.ContentType = "application/json";
             await context.Response.WriteAsJsonAsync(new { title = ex.Message, status = 401 });
         }
+        catch (KeyNotFoundException ex)
+        {
+            context.Response.StatusCode = StatusCodes.Status404NotFound;
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsJsonAsync(new { title = ex.Message, status = 404 });
+        }
         catch (InvalidOperationException ex)
         {
             context.Response.StatusCode = StatusCodes.Status400BadRequest;

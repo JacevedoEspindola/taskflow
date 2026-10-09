@@ -11,6 +11,7 @@ using TaskFlow.Infrastructure.Authentication;
 using TaskFlow.Infrastructure.Persistence;
 using TaskFlow.Infrastructure.Services;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // ============================================
@@ -78,8 +79,23 @@ builder.Services.AddHttpContextAccessor();
 // 6. SWAGGER + OPENAPI
 // ============================================
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = Microsoft.OpenApi.SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = Microsoft.OpenApi.ParameterLocation.Header,
+        Description = "Pega tu token JWT aquí (sin la palabra 'Bearer')"
+    });
 
+    options.AddSecurityRequirement(document => new Microsoft.OpenApi.OpenApiSecurityRequirement
+    {
+        [new Microsoft.OpenApi.OpenApiSecuritySchemeReference("Bearer", document)] = []
+    });
+});
 var app = builder.Build();
 
 // ============================================
@@ -101,5 +117,6 @@ app.UseAuthorization();
 // ENDPOINTS
 // ============================================
 app.MapAuthEndpoints();
+app.MapProjectEndpoints();
 
 app.Run();
