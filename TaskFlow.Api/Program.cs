@@ -118,5 +118,7 @@ app.UseAuthorization();
 // ============================================
 app.MapAuthEndpoints();
 app.MapProjectEndpoints();
+app.MapColumnEndpoints();
+app.MapTaskEndpoints();
 
 app.Run();
