@@ -13,10 +13,16 @@ public class AssignTaskCommandHandler : IRequestHandler<AssignTaskCommand, TaskD
     private readonly IApplicationDbContext _db;
     private readonly ICurrentUserService _currentUser;
 
-    public AssignTaskCommandHandler(IApplicationDbContext db, ICurrentUserService currentUser)
+    private readonly IRealTimeNotifier _notifier;
+
+    public AssignTaskCommandHandler(
+        IApplicationDbContext db,
+        ICurrentUserService currentUser,
+        IRealTimeNotifier notifier)
     {
         _db = db;
         _currentUser = currentUser;
+        _notifier = notifier;
     }
 
     public async Task<TaskDetailDto> Handle(AssignTaskCommand request, CancellationToken cancellationToken)
@@ -60,20 +66,25 @@ public class AssignTaskCommandHandler : IRequestHandler<AssignTaskCommand, TaskD
             ? await _db.Users.FirstOrDefaultAsync(u => u.Id == task.AssigneeId.Value, cancellationToken)
             : null;
 
-        return new TaskDetailDto(
-            task.Id,
-            task.Title,
-            task.Description,
-            task.Priority,
-            task.DueDate,
-            task.Position,
-            task.ColumnId,
-            task.Column.Name,
-            task.Column.ProjectId,
-            task.AssigneeId,
-            assignee?.FullName,
-            assignee?.Email,
-            task.CreatedAt
-        );
+        var dto = new TaskDetailDto(
+                task.Id,
+                task.Title,
+                task.Description,
+                task.Priority,
+                task.DueDate,
+                task.Position,
+                task.ColumnId,
+                task.Column.Name,
+                task.Column.ProjectId,
+                task.AssigneeId,
+                assignee?.FullName,
+                assignee?.Email,
+                task.CreatedAt
+            );
+
+        // 🔔 Notificar la asignación
+        await _notifier.NotifyTaskAssignedAsync(task.Column.ProjectId, dto);
+
+        return dto;
     }
 }

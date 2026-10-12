@@ -10,6 +10,7 @@ using TaskFlow.Application.Common.Interfaces;
 using TaskFlow.Infrastructure.Authentication;
 using TaskFlow.Infrastructure.Persistence;
 using TaskFlow.Infrastructure.Services;
+using TaskFlow.Infrastructure.RealTime;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -63,8 +64,24 @@ builder.Services
             IssuerSigningKey = key,
             ClockSkew = TimeSpan.Zero
         };
-    });
 
+        // 🎯 Permitir que el token JWT viaje por query string en SignalR
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.HttpContext.Request.Path;
+
+                if (!string.IsNullOrEmpty(accessToken)
+                    && path.StartsWithSegments("/hubs"))
+                {
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            }
+        };
+    });
 builder.Services.AddAuthorization();
 
 // ============================================
@@ -76,7 +93,13 @@ builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddHttpContextAccessor();
 
 // ============================================
-// 6. SWAGGER + OPENAPI
+// 6. SIGNALR
+// ============================================
+builder.Services.AddSignalR();
+builder.Services.AddScoped<IRealTimeNotifier, SignalRNotifier>();
+
+// ============================================
+// 7. SWAGGER + OPENAPI
 // ============================================
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -110,6 +133,9 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<TaskFlow.API.Middleware.ExceptionHandlingMiddleware>();
 app.UseHttpsRedirection();
 
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -120,5 +146,7 @@ app.MapAuthEndpoints();
 app.MapProjectEndpoints();
 app.MapColumnEndpoints();
 app.MapTaskEndpoints();
+
+app.MapHub<NotificationHub>("/hubs/notifications");
 
 app.Run();

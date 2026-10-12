@@ -13,12 +13,17 @@ public class MoveTaskCommandHandler : IRequestHandler<MoveTaskCommand, TaskDetai
     private readonly IApplicationDbContext _db;
     private readonly ICurrentUserService _currentUser;
 
-    public MoveTaskCommandHandler(IApplicationDbContext db, ICurrentUserService currentUser)
+    private readonly IRealTimeNotifier _notifier;
+
+    public MoveTaskCommandHandler(
+        IApplicationDbContext db,
+        ICurrentUserService currentUser,
+        IRealTimeNotifier notifier)
     {
         _db = db;
         _currentUser = currentUser;
+        _notifier = notifier;
     }
-
     public async Task<TaskDetailDto> Handle(MoveTaskCommand request, CancellationToken cancellationToken)
     {
         var userId = _currentUser.UserId
@@ -109,23 +114,28 @@ public class MoveTaskCommandHandler : IRequestHandler<MoveTaskCommand, TaskDetai
             task.Position = newPosition;
         }
 
-        await _db.SaveChangesAsync(cancellationToken);
+          await _db.SaveChangesAsync(cancellationToken);
 
-        return new TaskDetailDto(
-            task.Id,
-            task.Title,
-            task.Description,
-            task.Priority,
-            task.DueDate,
-            task.Position,
-            task.ColumnId,
-            targetColumn.Name,
-            targetColumn.ProjectId,
-            task.AssigneeId,
-            task.Assignee?.FullName,
-            task.Assignee?.Email,
-            task.CreatedAt
-        );
+             var dto = new TaskDetailDto(
+                 task.Id,
+                 task.Title,
+                 task.Description,
+                 task.Priority,
+                 task.DueDate,
+                 task.Position,
+                 task.ColumnId,
+                 targetColumn.Name,
+                 targetColumn.ProjectId,
+                 task.AssigneeId,
+                 task.Assignee?.FullName,
+                 task.Assignee?.Email,
+                 task.CreatedAt
+             );
+
+        // 🔔 Notificar el movimiento en tiempo real
+        await _notifier.NotifyTaskMovedAsync(targetColumn.ProjectId, dto);
+
+        return dto;
     }
 
     private async Task<int> GetMaxPositionAsync(Guid columnId, CancellationToken ct)

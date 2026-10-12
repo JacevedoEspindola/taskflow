@@ -1,0 +1,160 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>TaskFlow Live</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            padding: 20px;
+            background: #0d1117;
+            color: #c9d1d9;
+        }
+
+        h1 {
+            color: #58a6ff;
+            margin-bottom: 5px;
+        }
+
+        #status {
+            font-weight: bold;
+        }
+
+        .ok {
+            color: #7ee787;
+        }
+
+        .err {
+            color: #ff7b72;
+        }
+
+        #log {
+            background: #161b22;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Consolas', monospace;
+            max-height: 500px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+
+        .event {
+            padding: 8px 0;
+            border-bottom: 1px solid #21262d;
+            font-size: 13px;
+        }
+
+        .event-type {
+            font-weight: bold;
+            color: #7ee787;
+            margin-right: 8px;
+        }
+
+        .event-time {
+            color: #8b949e;
+            margin-right: 8px;
+        }
+
+        .event-data {
+            color: #79c0ff;
+        }
+
+        input, button {
+            padding: 10px;
+            margin: 4px;
+            border-radius: 6px;
+            border: 1px solid #30363d;
+            background: #21262d;
+            color: #c9d1d9;
+            font-size: 14px;
+        }
+
+        button {
+            cursor: pointer;
+            background: #238636;
+            color: white;
+            font-weight: bold;
+        }
+
+            button:hover {
+                background: #2ea043;
+            }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📡 TaskFlow — Live</h1>
+        <p>Estado: <span id="status">Conectando...</span></p>
+
+        <div>
+            <input id="projectId" placeholder="Pega el ProjectId" style="width: 500px" />
+            <button onclick="joinProject()">Unirse al proyecto</button>
+        </div>
+
+        <h3>Eventos recibidos:</h3>
+        <div id="log"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+    <script>
+        const log = document.getElementById('log');
+
+        function addEvent(type, data) {
+            const div = document.createElement('div');
+            div.className = 'event';
+            div.innerHTML = `
+                <span class="event-type">[${type}]</span>
+                <span class="event-time">${new Date().toLocaleTimeString()}</span>
+                <span class="event-data">${JSON.stringify(data)}</span>
+            `;
+            log.prepend(div);
+        }
+
+        // Pide el token JWT al usuario
+        const TOKEN = prompt('Pega tu token JWT (solo el texto, sin "Bearer"):');
+        if (!TOKEN) {
+            document.getElementById('status').textContent = '❌ Sin token';
+            document.getElementById('status').className = 'err';
+        }
+
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl('/hubs/notifications', { accessTokenFactory: () => TOKEN })
+            .withAutomaticReconnect()
+            .build();
+
+        // Eventos que emite el backend
+        connection.on('TaskCreated', d => addEvent('TaskCreated', d));
+        connection.on('TaskUpdated', d => addEvent('TaskUpdated', d));
+        connection.on('TaskMoved', d => addEvent('TaskMoved', d));
+        connection.on('TaskDeleted', d => addEvent('TaskDeleted', d));
+        connection.on('TaskAssigned', d => addEvent('TaskAssigned', d));
+
+        connection.start()
+            .then(() => {
+                document.getElementById('status').textContent = '✅ Conectado';
+                document.getElementById('status').className = 'ok';
+            })
+            .catch(err => {
+                document.getElementById('status').textContent = '❌ Error: ' + err;
+                document.getElementById('status').className = 'err';
+            });
+
+        async function joinProject() {
+            const projectId = document.getElementById('projectId').value.trim();
+            if (!projectId) return alert('Pega un ProjectId');
+
+            try {
+                await connection.invoke('JoinProject', projectId);
+                alert('✅ Unido al proyecto ' + projectId);
+            } catch (err) {
+                alert('❌ Error: ' + err);
+            }
+        }
+    </script>
+</body>
+</html>
