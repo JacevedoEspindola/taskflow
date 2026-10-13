@@ -24,7 +24,7 @@ public class GetProjectsQueryHandler : IRequestHandler<GetProjectsQuery, IEnumer
     public async Task<IEnumerable<ProjectDto>> Handle(GetProjectsQuery request, CancellationToken cancellationToken)
     {
         var userId = _currentUser.UserId
-            ?? throw new UnauthorizedAccessException("Debes iniciar sesión.");
+             ?? throw new UnauthorizedAccessException("You must be logged in.");
 
         // Solo proyectos donde el usuario es miembro
         var projects = await _db.Projects

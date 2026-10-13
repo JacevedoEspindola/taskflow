@@ -24,7 +24,7 @@ public class GetProjectByIdQueryHandler : IRequestHandler<GetProjectByIdQuery, P
     public async Task<ProjectDetailDto> Handle(GetProjectByIdQuery request, CancellationToken cancellationToken)
     {
         var userId = _currentUser.UserId
-            ?? throw new UnauthorizedAccessException("Debes iniciar sesión.");
+            ?? throw new UnauthorizedAccessException("You must be logged in.");
 
         var project = await _db.Projects
             .Where(p => p.Id == request.ProjectId)
@@ -47,7 +47,7 @@ public class GetProjectByIdQueryHandler : IRequestHandler<GetProjectByIdQuery, P
             .FirstOrDefaultAsync(cancellationToken);
 
         if (project is null)
-            throw new KeyNotFoundException($"Proyecto '{request.ProjectId}' no encontrado o sin acceso.");
+            throw new KeyNotFoundException($"Project '{request.ProjectId}' not found or access denied.");
 
         return project;
     }

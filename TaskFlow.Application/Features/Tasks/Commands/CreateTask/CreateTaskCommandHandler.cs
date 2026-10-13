@@ -25,20 +25,21 @@ public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, TaskD
     public async Task<TaskDetailDto> Handle(CreateTaskCommand request, CancellationToken cancellationToken)
     {
         var userId = _currentUser.UserId
-            ?? throw new UnauthorizedAccessException("Debes iniciar sesión.");
+            ?? throw new UnauthorizedAccessException("You must be logged in.");
+
 
         var column = await _db.BoardColumns
             .Include(c => c.Project)
             .FirstOrDefaultAsync(c => c.Id == request.ColumnId, cancellationToken);
 
         if (column is null)
-            throw new KeyNotFoundException($"Columna '{request.ColumnId}' no encontrada.");
+            throw new KeyNotFoundException($"Column '{request.ColumnId}' not found.");
 
         var hasAccess = await _db.ProjectMembers
             .AnyAsync(pm => pm.ProjectId == column.ProjectId && pm.UserId == userId, cancellationToken);
 
         if (!hasAccess)
-            throw new UnauthorizedAccessException("No tienes acceso a este proyecto.");
+            throw new UnauthorizedAccessException("You do not have access to this project.");
 
         var maxPosition = await _db.TaskItems
             .Where(t => t.ColumnId == request.ColumnId)

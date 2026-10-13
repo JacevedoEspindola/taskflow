@@ -5,6 +5,7 @@ Gestor de proyectos y tareas tipo Trello/Notion, construido con **.NET 10** apli
 [![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
 [![SQL Server](https://img.shields.io/badge/SQL%20Server-2025-CC2927?logo=microsoftsqlserver)](https://www.microsoft.com/sql-server)
 [![SignalR](https://img.shields.io/badge/SignalR-Realtime-512BD4?logo=dotnet)](https://dotnet.microsoft.com/apps/aspnet/signalr)
+[![Tests](https://img.shields.io/badge/tests-27%20passed-success)](https://github.com/JacevedoEspindola/taskflow)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ---
@@ -15,6 +16,7 @@ Gestor de proyectos y tareas tipo Trello/Notion, construido con **.NET 10** apli
 - [Stack tecnológico](#-stack-tecnológico)
 - [Arquitectura](#️-arquitectura)
 - [Funcionalidades](#-funcionalidades)
+- [Testing](#-testing)
 - [Screenshots](#-screenshots)
 - [Cómo correrlo](#-cómo-correrlo)
 - [API Endpoints](#-api-endpoints)
@@ -25,16 +27,17 @@ Gestor de proyectos y tareas tipo Trello/Notion, construido con **.NET 10** apli
 
 ## 🎯 Sobre el proyecto
 
-TaskFlow es una API REST que permite gestionar proyectos, columnas y tareas al estilo Kanban (Trello). El objetivo del proyecto es demostrar buenas prácticas de desarrollo backend con .NET:
+TaskFlow is a REST API that allows managing projects, columns and tasks in a Kanban style (like Trello). The goal of this project is to demonstrate backend best practices with .NET:
 
-- **Clean Architecture** con separación estricta de responsabilidades.
-- **CQRS** con MediatR para casos de uso desacoplados.
-- **FluentValidation** con pipeline automático.
-- **JWT** para autenticación stateless.
-- **BCrypt** para hashing seguro de contraseñas.
-- **SignalR** para notificaciones en tiempo real.
-- **Entity Framework Core** con configuraciones Fluent API.
-- **Roles y permisos** por proyecto (Owner, Admin, Member).
+- **Clean Architecture** with strict separation of concerns.
+- **CQRS** with MediatR for decoupled use cases.
+- **FluentValidation** with automatic pipeline.
+- **JWT** for stateless authentication.
+- **BCrypt** for secure password hashing.
+- **SignalR** for real-time notifications.
+- **Entity Framework Core** with Fluent API configurations.
+- **Role-based permissions** per project (Owner, Admin, Member).
+- **Unit tests** with xUnit, Moq and FluentAssertions.
 
 ---
 
@@ -54,10 +57,19 @@ TaskFlow es una API REST que permite gestionar proyectos, columnas y tareas al e
 | **SignalR** | Tiempo real (WebSockets) |
 | **Swagger / OpenAPI** | Documentación de la API |
 
+### Testing
+| Tecnología | Uso |
+|---|---|
+| **xUnit** | Framework de testing |
+| **Moq** | Mocking de dependencias |
+| **FluentAssertions** | Assertions legibles |
+| **EF Core InMemory** | Base de datos en memoria |
+| **Coverlet** | Cobertura de código |
+
 ### Próximamente
 - **React + TypeScript** (frontend)
 - **Docker** + **GitHub Actions**
-- **Tests** con xUnit
+- **Deploy** en Azure / Railway
 
 ---
 
@@ -101,10 +113,13 @@ TaskFlow/
 │   ├── RealTime/                → NotificationHub, SignalRNotifier
 │   └── Services/                → CurrentUserService
 │
-└── TaskFlow.Api/
-    ├── Endpoints/               → Auth, Projects, Columns, Tasks
-    ├── Middleware/              → ExceptionHandlingMiddleware
-    └── wwwroot/                 → live.html (cliente SignalR de prueba)
+├── TaskFlow.Api/
+│   ├── Endpoints/               → Auth, Projects, Columns, Tasks
+│   ├── Middleware/              → ExceptionHandlingMiddleware
+│   └── wwwroot/                 → live.html (cliente SignalR de prueba)
+│
+└── tests/
+    └── TaskFlow.UnitTests/      → xUnit tests (27 tests)
 ```
 
 ---
@@ -142,6 +157,54 @@ TaskFlow/
 - [x] Grupos por proyecto (solo miembros reciben eventos)
 - [x] Autenticación JWT en el hub
 - [x] Cliente HTML de prueba (`/live.html`)
+
+---
+
+## 🧪 Testing
+
+El proyecto incluye **27 tests unitarios** con xUnit, Moq y FluentAssertions, cubriendo los casos de uso principales.
+
+### Ejecutar los tests
+
+```bash
+dotnet test
+```
+
+### Cobertura de tests
+
+| Módulo | Tests |
+|---|---|
+| **Auth** | Validadores de Register/Login, `RegisterCommandHandler`, `LoginCommandHandler` |
+| **Projects** | `CreateProjectCommandHandler` (creación + validaciones) |
+| **Columns** | `CreateColumnCommandHandler` (posición automática + permisos) |
+| **Tasks** | `MoveTaskCommandHandler` (reordenamiento, notificaciones SignalR, validaciones) |
+
+### Ejemplo de test
+
+```csharp
+[Fact]
+public async Task Should_Move_Task_To_Target_Column_When_Target_Is_Different()
+{
+    // Arrange
+    var (db, _, _, inProgressColumnId, taskId) = await SeedScenarioAsync();
+    var handler = new MoveTaskCommandHandler(db, _currentUserMock.Object, _notifierMock.Object);
+    var command = new MoveTaskCommand(taskId, inProgressColumnId, Position: null);
+
+    // Act
+    var result = await handler.Handle(command, CancellationToken.None);
+
+    // Assert
+    result.ColumnId.Should().Be(inProgressColumnId);
+    result.ColumnName.Should().Be("In Progress");
+
+    var task = await db.TaskItems.FindAsync(taskId);
+    task!.Position.Should().Be(1);
+}
+```
+
+### Resultado
+
+![Tests](docs/tests/01-test-results.png)
 
 ---
 
@@ -236,46 +299,46 @@ TaskFlow/
 ### Auth
 | Método | Ruta | Descripción |
 |---|---|---|
-| `POST` | `/api/auth/register` | Registrar usuario |
-| `POST` | `/api/auth/login` | Login (devuelve JWT) |
+| `POST` | `/api/auth/register` | Register user |
+| `POST` | `/api/auth/login` | Login (returns JWT) |
 
 ### Projects
 | Método | Ruta | Descripción |
 |---|---|---|
-| `GET` | `/api/projects` | Listar mis proyectos |
-| `POST` | `/api/projects` | Crear proyecto |
-| `GET` | `/api/projects/{id}` | Ver detalle |
-| `PUT` | `/api/projects/{id}` | Editar (Owner/Admin) |
-| `DELETE` | `/api/projects/{id}` | Eliminar (Owner/Admin) |
+| `GET` | `/api/projects` | List my projects |
+| `POST` | `/api/projects` | Create project |
+| `GET` | `/api/projects/{id}` | Get project details |
+| `PUT` | `/api/projects/{id}` | Update (Owner/Admin) |
+| `DELETE` | `/api/projects/{id}` | Delete (Owner/Admin) |
 
 ### Columns
 | Método | Ruta | Descripción |
 |---|---|---|
-| `GET` | `/api/projects/{projectId}/columns` | Listar columnas |
-| `POST` | `/api/projects/{projectId}/columns` | Crear columna |
-| `PUT` | `/api/projects/{projectId}/columns/{id}` | Editar / Reordenar |
-| `DELETE` | `/api/projects/{projectId}/columns/{id}` | Eliminar |
+| `GET` | `/api/projects/{projectId}/columns` | List columns |
+| `POST` | `/api/projects/{projectId}/columns` | Create column |
+| `PUT` | `/api/projects/{projectId}/columns/{id}` | Update / Reorder |
+| `DELETE` | `/api/projects/{projectId}/columns/{id}` | Delete |
 
 ### Tasks
 | Método | Ruta | Descripción |
 |---|---|---|
-| `GET` | `/api/columns/{columnId}/tasks` | Tareas de una columna |
-| `POST` | `/api/columns/{columnId}/tasks` | Crear tarea |
-| `GET` | `/api/tasks/{id}` | Detalle de tarea |
-| `PUT` | `/api/tasks/{id}` | Editar tarea |
-| `PATCH` | `/api/tasks/{id}/move` | **Mover entre columnas** |
-| `PATCH` | `/api/tasks/{id}/assign` | **Asignar usuario** |
-| `DELETE` | `/api/tasks/{id}` | Eliminar tarea |
+| `GET` | `/api/columns/{columnId}/tasks` | Tasks in a column |
+| `POST` | `/api/columns/{columnId}/tasks` | Create task |
+| `GET` | `/api/tasks/{id}` | Task details |
+| `PUT` | `/api/tasks/{id}` | Update task |
+| `PATCH` | `/api/tasks/{id}/move` | **Move between columns** |
+| `PATCH` | `/api/tasks/{id}/assign` | **Assign user** |
+| `DELETE` | `/api/tasks/{id}` | Delete task |
 
 ### SignalR
 | Ruta | Descripción |
 |---|---|
-| `/hubs/notifications` | Hub de tiempo real (requiere JWT) |
+| `/hubs/notifications` | Real-time hub (requires JWT) |
 
-**Eventos emitidos:**
-- `TaskCreated` — al crear una tarea
-- `TaskMoved` — al mover una tarea entre columnas
-- `TaskAssigned` — al asignar/cambiar el asignado
+**Events emitted:**
+- `TaskCreated` — when a task is created
+- `TaskMoved` — when a task is moved between columns
+- `TaskAssigned` — when the assignee changes
 
 ### Probar la autenticación
 
@@ -307,20 +370,20 @@ Content-Type: application/json
 ## 🗺️ Roadmap
 
 - [x] **Fase 1:** Setup + Clean Architecture
-- [x] **Fase 2:** Autenticación (Register + Login + JWT)
-- [x] **Fase 3:** CRUD de Proyectos + Roles + Autorización
-- [x] **Fase 4:** CRUD de Columnas
-- [x] **Fase 5:** CRUD de Tareas + Move + Assign
-- [x] **Fase 6:** SignalR (tiempo real)
-- [ ] **Fase 7:** Frontend React + TypeScript
-- [ ] **Fase 8:** Tests con xUnit
-- [ ] **Fase 9:** Docker + CI/CD + Deploy
+- [x] **Fase 2:** Authentication (Register + Login + JWT)
+- [x] **Fase 3:** Projects CRUD + Roles + Authorization
+- [x] **Fase 4:** Columns CRUD
+- [x] **Fase 5:** Tasks CRUD + Move + Assign
+- [x] **Fase 6:** SignalR (real-time)
+- [x] **Fase 7:** Unit tests with xUnit + Moq
+- [ ] **Fase 8:** Docker + CI/CD + Deploy
+- [ ] **Fase 9:** Frontend with React + TypeScript
 
 ---
 
 ## 👤 Autor
 
-**Lalo Acevedo**
+**Jose Acevedo**
 - GitHub: [@JacevedoEspindola](https://github.com/JacevedoEspindola)
 
 ---
@@ -328,5 +391,3 @@ Content-Type: application/json
 ## 📄 Licencia
 
 Este proyecto está bajo la licencia MIT. Ver [`LICENSE`](LICENSE) para más detalles.
----
-

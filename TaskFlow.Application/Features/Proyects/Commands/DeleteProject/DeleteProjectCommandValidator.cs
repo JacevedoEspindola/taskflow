@@ -9,7 +9,6 @@ public class DeleteProjectCommandValidator : AbstractValidator<DeleteProjectComm
 {
     public DeleteProjectCommandValidator()
     {
-        RuleFor(x => x.ProjectId)
-            .NotEmpty().WithMessage("El Id del proyecto es obligatorio.");
+        RuleFor(x => x.ProjectId).NotEmpty().WithMessage("Project id is required.");
     }
 }

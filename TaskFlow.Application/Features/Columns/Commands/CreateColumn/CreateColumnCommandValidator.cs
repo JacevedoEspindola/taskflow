@@ -9,12 +9,10 @@ public class CreateColumnCommandValidator : AbstractValidator<CreateColumnComman
 {
     public CreateColumnCommandValidator()
     {
-        RuleFor(x => x.ProjectId)
-            .NotEmpty().WithMessage("El Id del proyecto es obligatorio.");
-
+        RuleFor(x => x.ProjectId).NotEmpty().WithMessage("Project id is required.");
         RuleFor(x => x.Name)
-            .NotEmpty().WithMessage("El nombre de la columna es obligatorio.")
-            .MinimumLength(2).WithMessage("Debe tener al menos 2 caracteres.")
-            .MaximumLength(100).WithMessage("No puede superar los 100 caracteres.");
+            .NotEmpty().WithMessage("Column name is required.")
+            .MinimumLength(2).WithMessage("Column name must be at least 2 characters.")
+            .MaximumLength(100).WithMessage("Column name cannot exceed 100 characters.");
     }
 }

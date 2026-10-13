@@ -9,6 +9,6 @@ public class DeleteTaskCommandValidator : AbstractValidator<DeleteTaskCommand>
 {
     public DeleteTaskCommandValidator()
     {
-        RuleFor(x => x.TaskId).NotEmpty();
+        RuleFor(x => x.TaskId).NotEmpty().WithMessage("Task id is required.");
     }
 }

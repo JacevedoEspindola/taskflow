@@ -33,13 +33,13 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponse>
             .FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
 
         if (user is null)
-            throw new UnauthorizedAccessException("Credenciales inválidas.");
+            throw new UnauthorizedAccessException("Invalid credentials.");
 
         // 2. Verificar contraseña
         var passwordOk = _passwordHasher.Verify(request.Password, user.PasswordHash);
 
         if (!passwordOk)
-            throw new UnauthorizedAccessException("Credenciales inválidas.");
+            throw new UnauthorizedAccessException("Invalid credentials.");
 
         // 3. Generar token
         var token = _jwtService.GenerateToken(user);
