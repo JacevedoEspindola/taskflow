@@ -25,7 +25,7 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
     {
         // 1. Validar que el usuario está autenticado
         var userId = _currentUser.UserId
-            ?? throw new UnauthorizedAccessException("Debes iniciar sesión para crear un proyecto.");
+            ?? throw new UnauthorizedAccessException("You must be logged in to create a project.");
 
         // 2. Crear el proyecto
         var project = new Project

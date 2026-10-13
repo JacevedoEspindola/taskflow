@@ -30,22 +30,22 @@ public class ExceptionHandlingMiddleware
 
             await context.Response.WriteAsJsonAsync(new
             {
-                title = "Error de validación",
+                title = "Validation error",
                 status = 400,
                 errors
             });
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            context.Response.ContentType = "application/json";
-            await context.Response.WriteAsJsonAsync(new { title = ex.Message, status = 401 });
         }
         catch (KeyNotFoundException ex)
         {
             context.Response.StatusCode = StatusCodes.Status404NotFound;
             context.Response.ContentType = "application/json";
             await context.Response.WriteAsJsonAsync(new { title = ex.Message, status = 404 });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsJsonAsync(new { title = ex.Message, status = 401 });
         }
         catch (InvalidOperationException ex)
         {

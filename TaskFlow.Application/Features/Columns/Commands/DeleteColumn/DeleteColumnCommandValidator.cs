@@ -9,7 +9,7 @@ public class DeleteColumnCommandValidator : AbstractValidator<DeleteColumnComman
 {
     public DeleteColumnCommandValidator()
     {
-        RuleFor(x => x.ProjectId).NotEmpty();
-        RuleFor(x => x.ColumnId).NotEmpty();
+        RuleFor(x => x.ProjectId).NotEmpty().WithMessage("Project id is required.");
+        RuleFor(x => x.ColumnId).NotEmpty().WithMessage("Column id is required.");
     }
 }

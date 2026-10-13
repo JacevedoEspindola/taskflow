@@ -9,7 +9,6 @@ public class AssignTaskCommandValidator : AbstractValidator<AssignTaskCommand>
 {
     public AssignTaskCommandValidator()
     {
-        RuleFor(x => x.TaskId).NotEmpty();
-        // AssigneeId puede ser null → significa "desasignar"
+        RuleFor(x => x.TaskId).NotEmpty().WithMessage("Task id is required.");
     }
 }

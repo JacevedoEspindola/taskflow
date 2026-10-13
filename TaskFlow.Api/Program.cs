@@ -11,6 +11,8 @@ using TaskFlow.Infrastructure.Authentication;
 using TaskFlow.Infrastructure.Persistence;
 using TaskFlow.Infrastructure.Services;
 using TaskFlow.Infrastructure.RealTime;
+using Microsoft.EntityFrameworkCore;
+using TaskFlow.Infrastructure.Persistence;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -120,6 +122,16 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 var app = builder.Build();
+
+// ============================================
+// APLICAR MIGRACIONES AUTOMÁTICAMENTE (solo en Development)
+// ============================================
+if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await dbContext.Database.MigrateAsync();
+}
 
 // ============================================
 // MIDDLEWARES

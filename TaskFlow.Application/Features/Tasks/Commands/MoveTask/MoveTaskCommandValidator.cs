@@ -9,11 +9,10 @@ public class MoveTaskCommandValidator : AbstractValidator<MoveTaskCommand>
 {
     public MoveTaskCommandValidator()
     {
-        RuleFor(x => x.TaskId).NotEmpty();
-        RuleFor(x => x.TargetColumnId).NotEmpty();
-
+        RuleFor(x => x.TaskId).NotEmpty().WithMessage("Task id is required.");
+        RuleFor(x => x.TargetColumnId).NotEmpty().WithMessage("Target column id is required.");
         RuleFor(x => x.Position)
-            .GreaterThan(0).WithMessage("La posición debe ser mayor a 0.")
+            .GreaterThan(0).WithMessage("Position must be greater than 0.")
             .When(x => x.Position.HasValue);
     }
 }

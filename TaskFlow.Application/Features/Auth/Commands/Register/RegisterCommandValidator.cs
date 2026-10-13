@@ -10,19 +10,19 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
     public RegisterCommandValidator()
     {
         RuleFor(x => x.Email)
-            .NotEmpty().WithMessage("El email es obligatorio.")
-            .EmailAddress().WithMessage("El email no tiene un formato válido.")
+            .NotEmpty().WithMessage("Email is required.")
+            .EmailAddress().WithMessage("Email format is invalid.")
             .MaximumLength(256);
 
         RuleFor(x => x.Password)
-            .NotEmpty().WithMessage("La contraseña es obligatoria.")
-            .MinimumLength(8).WithMessage("Debe tener al menos 8 caracteres.")
-            .Matches("[A-Z]").WithMessage("Debe contener al menos una mayúscula.")
-            .Matches("[a-z]").WithMessage("Debe contener al menos una minúscula.")
-            .Matches("[0-9]").WithMessage("Debe contener al menos un número.");
+            .NotEmpty().WithMessage("Password is required.")
+            .MinimumLength(8).WithMessage("Password must be at least 8 characters.")
+            .Matches("[A-Z]").WithMessage("Password must contain at least one uppercase letter.")
+            .Matches("[a-z]").WithMessage("Password must contain at least one lowercase letter.")
+            .Matches("[0-9]").WithMessage("Password must contain at least one number.");
 
         RuleFor(x => x.FullName)
-            .NotEmpty().WithMessage("El nombre completo es obligatorio.")
+            .NotEmpty().WithMessage("Full name is required.")
             .MaximumLength(150);
     }
 }

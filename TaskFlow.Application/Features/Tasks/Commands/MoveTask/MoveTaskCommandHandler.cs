@@ -27,7 +27,7 @@ public class MoveTaskCommandHandler : IRequestHandler<MoveTaskCommand, TaskDetai
     public async Task<TaskDetailDto> Handle(MoveTaskCommand request, CancellationToken cancellationToken)
     {
         var userId = _currentUser.UserId
-            ?? throw new UnauthorizedAccessException("Debes iniciar sesión.");
+            ?? throw new KeyNotFoundException($"Task '{request.TaskId}' not found.");
 
         // 1. Cargar la tarea
         var task = await _db.TaskItems
@@ -36,25 +36,25 @@ public class MoveTaskCommandHandler : IRequestHandler<MoveTaskCommand, TaskDetai
             .FirstOrDefaultAsync(t => t.Id == request.TaskId, cancellationToken);
 
         if (task is null)
-            throw new KeyNotFoundException($"Tarea '{request.TaskId}' no encontrada.");
+            throw new KeyNotFoundException($"Task '{request.TaskId}' not found.");
 
         // 2. Cargar la columna destino
         var targetColumn = await _db.BoardColumns
             .FirstOrDefaultAsync(c => c.Id == request.TargetColumnId, cancellationToken);
 
         if (targetColumn is null)
-            throw new KeyNotFoundException($"Columna destino '{request.TargetColumnId}' no encontrada.");
+            throw new KeyNotFoundException($"Target column '{request.TargetColumnId}' not found.");
 
         // 3. Verificar acceso al proyecto
         var hasAccess = await _db.ProjectMembers
             .AnyAsync(pm => pm.ProjectId == targetColumn.ProjectId && pm.UserId == userId, cancellationToken);
 
         if (!hasAccess)
-            throw new UnauthorizedAccessException("No tienes acceso a este proyecto.");
+            throw new UnauthorizedAccessException("You do not have access to this project.");
 
         // 4. Validar que source y target están en el MISMO proyecto
         if (task.Column.ProjectId != targetColumn.ProjectId)
-            throw new InvalidOperationException("No se puede mover una tarea a un proyecto diferente.");
+            throw new InvalidOperationException("Cannot move a task to a different project.");
 
         var oldColumnId = task.ColumnId;
         var oldPosition = task.Position;

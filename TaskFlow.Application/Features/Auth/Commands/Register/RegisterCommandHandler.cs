@@ -34,7 +34,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, AuthRespo
             .AnyAsync(u => u.Email == email, cancellationToken);
 
         if (emailExists)
-            throw new InvalidOperationException($"El email '{email}' ya está registrado.");
+            throw new InvalidOperationException($"Email '{email}' is already registered.");
 
         // 2. Crear el usuario
         var user = new User

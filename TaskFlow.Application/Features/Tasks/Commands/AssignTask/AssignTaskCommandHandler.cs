@@ -1,10 +1,11 @@
-﻿using System;
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
 using TaskFlow.Application.Common.Interfaces;
 using TaskFlow.Application.Features.Tasks.Dtos;
+using TaskFlow.Domain.Entities;
 
 namespace TaskFlow.Application.Features.Tasks.Commands.AssignTask;
 
@@ -28,7 +29,7 @@ public class AssignTaskCommandHandler : IRequestHandler<AssignTaskCommand, TaskD
     public async Task<TaskDetailDto> Handle(AssignTaskCommand request, CancellationToken cancellationToken)
     {
         var userId = _currentUser.UserId
-            ?? throw new UnauthorizedAccessException("Debes iniciar sesión.");
+            ?? throw new UnauthorizedAccessException("You must be logged in.");
 
         // 1. Cargar la tarea
         var task = await _db.TaskItems
@@ -37,14 +38,14 @@ public class AssignTaskCommandHandler : IRequestHandler<AssignTaskCommand, TaskD
             .FirstOrDefaultAsync(t => t.Id == request.TaskId, cancellationToken);
 
         if (task is null)
-            throw new KeyNotFoundException($"Tarea '{request.TaskId}' no encontrada.");
+            throw new KeyNotFoundException($"Task '{request.TaskId}' not found");
 
         // 2. Verificar acceso al proyecto
         var hasAccess = await _db.ProjectMembers
             .AnyAsync(pm => pm.ProjectId == task.Column.ProjectId && pm.UserId == userId, cancellationToken);
 
         if (!hasAccess)
-            throw new UnauthorizedAccessException("No tienes acceso a este proyecto.");
+            throw new UnauthorizedAccessException("You do not have access to this project.");
 
         // 3. Si viene AssigneeId, verificar que sea miembro del proyecto
         if (request.AssigneeId.HasValue)
@@ -55,7 +56,7 @@ public class AssignTaskCommandHandler : IRequestHandler<AssignTaskCommand, TaskD
                          cancellationToken);
 
             if (!isMember)
-                throw new InvalidOperationException("El usuario asignado no es miembro del proyecto.");
+                throw new InvalidOperationException("The assigned user is not a member of this project.");
         }
 
         task.AssigneeId = request.AssigneeId;

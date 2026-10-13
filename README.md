@@ -1,83 +1,106 @@
 # TaskFlow 🚀
 
-Gestor de proyectos y tareas tipo Trello/Notion, construido con **.NET 10** aplicando **Clean Architecture**, **CQRS**, **JWT Authentication** y **SignalR** para tiempo real.
+> 🌐 **English** | [Español](README.es.md)
+
+A Trello/Notion-style project and task manager API, built with **.NET 10** using **Clean Architecture**, **CQRS**, **JWT Authentication**, **SignalR** for real-time updates, and fully **Dockerized**.
 
 [![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
-[![SQL Server](https://img.shields.io/badge/SQL%20Server-2025-CC2927?logo=microsoftsqlserver)](https://www.microsoft.com/sql-server)
+[![SQL Server](https://img.shields.io/badge/SQL%20Server-2022-CC2927?logo=microsoftsqlserver)](https://www.microsoft.com/sql-server)
 [![SignalR](https://img.shields.io/badge/SignalR-Realtime-512BD4?logo=dotnet)](https://dotnet.microsoft.com/apps/aspnet/signalr)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker)](https://www.docker.com/)
+[![Tests](https://img.shields.io/badge/tests-27%20passed-success)](https://github.com/JacevedoEspindola/taskflow)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ---
 
-## 📋 Tabla de contenidos
+## 📋 Table of Contents
 
-- [Sobre el proyecto](#-sobre-el-proyecto)
-- [Stack tecnológico](#-stack-tecnológico)
-- [Arquitectura](#️-arquitectura)
-- [Funcionalidades](#-funcionalidades)
+- [About the project](#-about-the-project)
+- [Tech Stack](#-tech-stack)
+- [Architecture](#️-architecture)
+- [Features](#-features)
+- [Testing](#-testing)
+- [Docker](#-docker)
 - [Screenshots](#-screenshots)
-- [Cómo correrlo](#-cómo-correrlo)
+- [Getting Started](#-getting-started)
 - [API Endpoints](#-api-endpoints)
 - [Roadmap](#️-roadmap)
-- [Autor](#-autor)
+- [Author](#-author)
 
 ---
 
-## 🎯 Sobre el proyecto
+## 🎯 About the project
 
-TaskFlow es una API REST que permite gestionar proyectos, columnas y tareas al estilo Kanban (Trello). El objetivo del proyecto es demostrar buenas prácticas de desarrollo backend con .NET:
+TaskFlow is a REST API that allows managing projects, columns and tasks in a Kanban style (like Trello). The goal of this project is to demonstrate backend best practices with .NET:
 
-- **Clean Architecture** con separación estricta de responsabilidades.
-- **CQRS** con MediatR para casos de uso desacoplados.
-- **FluentValidation** con pipeline automático.
-- **JWT** para autenticación stateless.
-- **BCrypt** para hashing seguro de contraseñas.
-- **SignalR** para notificaciones en tiempo real.
-- **Entity Framework Core** con configuraciones Fluent API.
-- **Roles y permisos** por proyecto (Owner, Admin, Member).
+- **Clean Architecture** with strict separation of concerns.
+- **CQRS** with MediatR for decoupled use cases.
+- **FluentValidation** with automatic pipeline.
+- **JWT** for stateless authentication.
+- **BCrypt** for secure password hashing.
+- **SignalR** for real-time notifications.
+- **Entity Framework Core** with Fluent API configurations.
+- **Role-based permissions** per project (Owner, Admin, Member).
+- **Unit tests** with xUnit, Moq and FluentAssertions.
+- **Fully Dockerized** with multi-stage builds and docker-compose.
 
 ---
 
-## 🛠️ Stack tecnológico
+## 🛠️ Tech Stack
 
 ### Backend
-| Tecnología | Uso |
+| Technology | Purpose |
 |---|---|
-| **.NET 10** | Framework principal |
-| **ASP.NET Core Minimal APIs** | Endpoints HTTP |
+| **.NET 10** | Core framework |
+| **ASP.NET Core Minimal APIs** | HTTP endpoints |
 | **Entity Framework Core 10** | ORM |
-| **SQL Server 2025** | Base de datos |
-| **MediatR** | Patrón CQRS |
-| **FluentValidation** | Validación de comandos |
-| **JWT** | Autenticación |
-| **BCrypt.Net-Next** | Hash de contraseñas |
-| **SignalR** | Tiempo real (WebSockets) |
-| **Swagger / OpenAPI** | Documentación de la API |
+| **SQL Server 2022** | Database |
+| **MediatR** | CQRS pattern |
+| **FluentValidation** | Command validation |
+| **JWT** | Authentication |
+| **BCrypt.Net-Next** | Password hashing |
+| **SignalR** | Real-time (WebSockets) |
+| **Swagger / OpenAPI** | API documentation |
 
-### Próximamente
+### Testing
+| Technology | Purpose |
+|---|---|
+| **xUnit** | Testing framework |
+| **Moq** | Dependency mocking |
+| **FluentAssertions** | Readable assertions |
+| **EF Core InMemory** | In-memory database for tests |
+| **Coverlet** | Code coverage |
+
+### DevOps
+| Technology | Purpose |
+|---|---|
+| **Docker** | Containerization |
+| **Docker Compose** | Multi-container orchestration |
+
+### Coming Soon
 - **React + TypeScript** (frontend)
-- **Docker** + **GitHub Actions**
-- **Tests** con xUnit
+- **GitHub Actions** (CI/CD)
+- **Cloud deploy** (Azure / Railway)
 
 ---
 
-## 🏛️ Arquitectura
+## 🏛️ Architecture
 
-El proyecto sigue **Clean Architecture**, con las dependencias apuntando siempre hacia el centro:
+The project follows **Clean Architecture**, with dependencies always pointing inward:
 
 ```
 ┌─────────────────────────────────────────┐
-│              TaskFlow.Api               │  ← Endpoints, DI, Middlewares, Hubs
+│              TaskFlow.Api               │  ← Endpoints, DI, Middleware, Hubs
 ├─────────────────────────────────────────┤
 │         TaskFlow.Infrastructure         │  ← EF Core, JWT, BCrypt, SignalR
 ├─────────────────────────────────────────┤
-│          TaskFlow.Application           │  ← Casos de uso, MediatR, DTOs
+│          TaskFlow.Application           │  ← Use cases, MediatR, DTOs
 ├─────────────────────────────────────────┤
-│             TaskFlow.Domain             │  ← Entidades, reglas de negocio
+│             TaskFlow.Domain             │  ← Entities, business rules
 └─────────────────────────────────────────┘
 ```
 
-### Estructura de carpetas
+### Folder structure
 
 ```
 TaskFlow/
@@ -91,9 +114,9 @@ TaskFlow/
 │   │                              IPasswordHasher, ICurrentUserService, IRealTimeNotifier
 │   └── Features/
 │       ├── Auth/                → Register + Login
-│       ├── Projects/            → CRUD de proyectos
-│       ├── Columns/             → CRUD de columnas
-│       └── Tasks/               → CRUD de tareas + Move + Assign
+│       ├── Projects/            → Project CRUD
+│       ├── Columns/             → Column CRUD
+│       └── Tasks/               → Task CRUD + Move + Assign
 │
 ├── TaskFlow.Infrastructure/
 │   ├── Authentication/          → JwtService, PasswordHasher, JwtSettings
@@ -101,47 +124,127 @@ TaskFlow/
 │   ├── RealTime/                → NotificationHub, SignalRNotifier
 │   └── Services/                → CurrentUserService
 │
-└── TaskFlow.Api/
-    ├── Endpoints/               → Auth, Projects, Columns, Tasks
-    ├── Middleware/              → ExceptionHandlingMiddleware
-    └── wwwroot/                 → live.html (cliente SignalR de prueba)
+├── TaskFlow.Api/
+│   ├── Endpoints/               → Auth, Projects, Columns, Tasks
+│   ├── Middleware/              → ExceptionHandlingMiddleware
+│   └── wwwroot/                 → live.html (SignalR test client)
+│
+└── tests/
+    └── TaskFlow.UnitTests/      → xUnit tests (27 tests)
 ```
 
 ---
 
-## ✅ Funcionalidades
+## ✅ Features
 
-### Autenticación
-- [x] Registro de usuarios con validación
-- [x] Login con generación de JWT
-- [x] Hash de contraseñas con BCrypt
-- [x] Validación automática con FluentValidation
-- [x] Manejo global de excepciones con respuestas JSON
+### Authentication
+- [x] User registration with validation
+- [x] Login with JWT generation
+- [x] BCrypt password hashing
+- [x] Automatic FluentValidation pipeline
+- [x] Global exception handling with structured JSON responses
 
-### Proyectos
-- [x] CRUD completo de proyectos
-- [x] Autorización por roles (Owner, Admin, Member)
-- [x] Columnas por defecto (To Do, In Progress, Done) al crear
-- [x] Solo miembros del proyecto pueden verlo/editar
+### Projects
+- [x] Full CRUD for projects
+- [x] Role-based authorization (Owner, Admin, Member)
+- [x] Default columns (To Do, In Progress, Done) on creation
+- [x] Only project members can view/edit
 
-### Columnas
-- [x] CRUD completo de columnas
-- [x] Posicionamiento y reordenamiento
-- [x] Solo Owners/Admins pueden modificar
+### Columns
+- [x] Full CRUD for columns
+- [x] Positioning and reordering
+- [x] Only Owners/Admins can modify
 
-### Tareas
-- [x] CRUD completo de tareas
-- [x] Prioridades (Low, Medium, High, Critical)
-- [x] Fecha límite opcional
-- [x] **Mover tareas entre columnas** (drag & drop backend)
-- [x] **Asignar tareas a miembros** del proyecto
-- [x] Posicionamiento dentro de columnas
+### Tasks
+- [x] Full CRUD for tasks
+- [x] Priorities (Low, Medium, High, Critical)
+- [x] Optional due date
+- [x] **Move tasks between columns** (backend drag & drop)
+- [x] **Assign tasks to project members**
+- [x] Positioning within columns
 
-### Tiempo real (SignalR)
-- [x] Notificaciones al crear/mover/asignar tareas
-- [x] Grupos por proyecto (solo miembros reciben eventos)
-- [x] Autenticación JWT en el hub
-- [x] Cliente HTML de prueba (`/live.html`)
+### Real-time (SignalR)
+- [x] Notifications on task create/move/assign
+- [x] Project-based groups (only members receive events)
+- [x] JWT authentication on the hub
+- [x] HTML test client (`/live.html`)
+
+---
+
+## 🧪 Testing
+
+The project includes **27 unit tests** with xUnit, Moq and FluentAssertions, covering the critical business logic.
+
+### Run tests
+
+```bash
+dotnet test
+```
+
+### Test coverage
+
+| Module | Tests |
+|---|---|
+| **Auth** | Register/Login validators, `RegisterCommandHandler`, `LoginCommandHandler` |
+| **Projects** | `CreateProjectCommandHandler` (creation + validations) |
+| **Columns** | `CreateColumnCommandHandler` (automatic position + permissions) |
+| **Tasks** | `MoveTaskCommandHandler` (reordering, SignalR notifications, validations) |
+
+### Example test
+
+```csharp
+[Fact]
+public async Task Should_Move_Task_To_Target_Column_When_Target_Is_Different()
+{
+    // Arrange
+    var (db, _, _, inProgressColumnId, taskId) = await SeedScenarioAsync();
+    var handler = new MoveTaskCommandHandler(db, _currentUserMock.Object, _notifierMock.Object);
+    var command = new MoveTaskCommand(taskId, inProgressColumnId, Position: null);
+
+    // Act
+    var result = await handler.Handle(command, CancellationToken.None);
+
+    // Assert
+    result.ColumnId.Should().Be(inProgressColumnId);
+    result.ColumnName.Should().Be("In Progress");
+
+    var task = await db.TaskItems.FindAsync(taskId);
+    task!.Position.Should().Be(1);
+}
+```
+
+### Test results
+
+![Tests](docs/tests/01-test-results.png)
+
+---
+
+## 🐳 Docker
+
+The project includes a **multi-stage Dockerfile** and **docker-compose** to run the entire stack (API + SQL Server) with a single command.
+
+### Run everything
+
+```bash
+docker-compose up --build
+```
+
+The API will be available at `http://localhost:8080/swagger`.
+
+### What's included
+
+- **Multi-stage Dockerfile** → final image ~200 MB (vs ~1 GB with SDK).
+- **SQL Server 2022** in a container with health check.
+- **Auto-migration** on startup (Development only).
+- **Persistent volume** for SQL Server data.
+
+### Docker Compose up
+
+![Docker Compose](docs/docker/01-docker-compose-up.png)
+
+### Swagger running in Docker
+
+![Swagger in Docker](docs/docker/03-swagger-in-docker.png)
 
 ---
 
@@ -150,61 +253,72 @@ TaskFlow/
 ### Swagger UI
 ![Swagger](docs/Swagger.PNG)
 
-### Autenticación
+### Authentication
 
-**Register exitoso:**
+**Register success:**
 ![Register](docs/register.PNG)
 
-**Login exitoso:**
+**Login success:**
 ![Login](docs/02-login-success.PNG)
 
-**Usuarios en la base de datos (con password hasheado):**
+**Users in database (with hashed password):**
 ![SSMS](docs/ssms-users.PNG)
 
-### CRUD de Proyectos
+### Projects CRUD
 
-**Crear proyecto (con columnas automáticas):**
+**Create project (with auto-generated columns):**
 ![Create Project](docs/04-create-project.PNG)
 
-**Listar proyectos:**
+**List projects:**
 ![List Projects](docs/05-list-projects.PNG)
 
-**Detalle de proyecto:**
+**Project detail:**
 ![Project Detail](docs/06-project-detail.PNG)
 
-### Tiempo Real (SignalR)
+### Real-time (SignalR)
 
-**Eventos en vivo cuando se crean/mueven/asignan tareas:**
+**Live events when tasks are created/moved/assigned:**
 ![SignalR Live](docs/signalr/01-live-events.png)
 
-### Estructura del proyecto
-![Estructura](docs/structure.PNG)
+### Project structure
+![Structure](docs/structure.PNG)
 
 ---
 
-## 🚀 Cómo correrlo
+## 🚀 Getting Started
 
-### Requisitos previos
+### Prerequisites
 - [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
-- [SQL Server Express o superior](https://www.microsoft.com/sql-server/sql-server-downloads)
-- [SQL Server Management Studio (SSMS)](https://aka.ms/ssmsfullsetup) *(opcional)*
+- [SQL Server Express or higher](https://www.microsoft.com/sql-server/sql-server-downloads) *(or use Docker)*
+- [SQL Server Management Studio (SSMS)](https://aka.ms/ssmsfullsetup) *(optional)*
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) *(optional, recommended)*
 
-### Pasos
+### Option 1: Run with Docker (recommended)
 
-1. **Clonar el repositorio:**
+```bash
+git clone https://github.com/JacevedoEspindola/taskflow.git
+cd taskflow
+docker-compose up --build
+```
+
+Open `http://localhost:8080/swagger`.
+
+### Option 2: Run locally
+
+1. **Clone the repository:**
    ```bash
    git clone https://github.com/JacevedoEspindola/taskflow.git
    cd taskflow
    ```
 
-2. **Configurar la cadena de conexión** en `TaskFlow.Api/appsettings.json`:
+2. **Configure the connection string** in `TaskFlow.Api/appsettings.json`:
    ```json
    "ConnectionStrings": {
      "DefaultConnection": "Server=localhost\\SQLEXPRESS;Database=TaskFlowDb;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true"
    }
    ```
 
-3. **Configurar el JWT Secret** en `TaskFlow.Api/appsettings.json`:
+3. **Configure the JWT secret** in `TaskFlow.Api/appsettings.json`:
    ```json
    "Jwt": {
      "Secret": "TaskFlow-Super-Secret-Key-For-Development-Only-Min-32-Chars-Long!!",
@@ -214,17 +328,17 @@ TaskFlow/
    }
    ```
 
-4. **Aplicar migraciones:**
+4. **Apply migrations:**
    ```bash
    dotnet ef database update -p TaskFlow.Infrastructure -s TaskFlow.Api
    ```
 
-5. **Correr la API:**
+5. **Run the API:**
    ```bash
    dotnet run --project TaskFlow.Api
    ```
 
-6. **Abrir Swagger:**
+6. **Open Swagger:**
    ```
    https://localhost:7236/swagger
    ```
@@ -234,52 +348,52 @@ TaskFlow/
 ## 📡 API Endpoints
 
 ### Auth
-| Método | Ruta | Descripción |
+| Method | Route | Description |
 |---|---|---|
-| `POST` | `/api/auth/register` | Registrar usuario |
-| `POST` | `/api/auth/login` | Login (devuelve JWT) |
+| `POST` | `/api/auth/register` | Register a new user |
+| `POST` | `/api/auth/login` | Login (returns JWT) |
 
 ### Projects
-| Método | Ruta | Descripción |
+| Method | Route | Description |
 |---|---|---|
-| `GET` | `/api/projects` | Listar mis proyectos |
-| `POST` | `/api/projects` | Crear proyecto |
-| `GET` | `/api/projects/{id}` | Ver detalle |
-| `PUT` | `/api/projects/{id}` | Editar (Owner/Admin) |
-| `DELETE` | `/api/projects/{id}` | Eliminar (Owner/Admin) |
+| `GET` | `/api/projects` | List my projects |
+| `POST` | `/api/projects` | Create project |
+| `GET` | `/api/projects/{id}` | Get project details |
+| `PUT` | `/api/projects/{id}` | Update (Owner/Admin) |
+| `DELETE` | `/api/projects/{id}` | Delete (Owner/Admin) |
 
 ### Columns
-| Método | Ruta | Descripción |
+| Method | Route | Description |
 |---|---|---|
-| `GET` | `/api/projects/{projectId}/columns` | Listar columnas |
-| `POST` | `/api/projects/{projectId}/columns` | Crear columna |
-| `PUT` | `/api/projects/{projectId}/columns/{id}` | Editar / Reordenar |
-| `DELETE` | `/api/projects/{projectId}/columns/{id}` | Eliminar |
+| `GET` | `/api/projects/{projectId}/columns` | List columns |
+| `POST` | `/api/projects/{projectId}/columns` | Create column |
+| `PUT` | `/api/projects/{projectId}/columns/{id}` | Update / Reorder |
+| `DELETE` | `/api/projects/{projectId}/columns/{id}` | Delete |
 
 ### Tasks
-| Método | Ruta | Descripción |
+| Method | Route | Description |
 |---|---|---|
-| `GET` | `/api/columns/{columnId}/tasks` | Tareas de una columna |
-| `POST` | `/api/columns/{columnId}/tasks` | Crear tarea |
-| `GET` | `/api/tasks/{id}` | Detalle de tarea |
-| `PUT` | `/api/tasks/{id}` | Editar tarea |
-| `PATCH` | `/api/tasks/{id}/move` | **Mover entre columnas** |
-| `PATCH` | `/api/tasks/{id}/assign` | **Asignar usuario** |
-| `DELETE` | `/api/tasks/{id}` | Eliminar tarea |
+| `GET` | `/api/columns/{columnId}/tasks` | Tasks in a column |
+| `POST` | `/api/columns/{columnId}/tasks` | Create task |
+| `GET` | `/api/tasks/{id}` | Task details |
+| `PUT` | `/api/tasks/{id}` | Update task |
+| `PATCH` | `/api/tasks/{id}/move` | **Move between columns** |
+| `PATCH` | `/api/tasks/{id}/assign` | **Assign user** |
+| `DELETE` | `/api/tasks/{id}` | Delete task |
 
 ### SignalR
-| Ruta | Descripción |
+| Route | Description |
 |---|---|
-| `/hubs/notifications` | Hub de tiempo real (requiere JWT) |
+| `/hubs/notifications` | Real-time hub (requires JWT) |
 
-**Eventos emitidos:**
-- `TaskCreated` — al crear una tarea
-- `TaskMoved` — al mover una tarea entre columnas
-- `TaskAssigned` — al asignar/cambiar el asignado
+**Events emitted:**
+- `TaskCreated` — when a task is created
+- `TaskMoved` — when a task is moved between columns
+- `TaskAssigned` — when the assignee changes
 
-### Probar la autenticación
+### Quick authentication test
 
-**Registro:**
+**Register:**
 ```http
 POST /api/auth/register
 Content-Type: application/json
@@ -306,27 +420,27 @@ Content-Type: application/json
 
 ## 🗺️ Roadmap
 
-- [x] **Fase 1:** Setup + Clean Architecture
-- [x] **Fase 2:** Autenticación (Register + Login + JWT)
-- [x] **Fase 3:** CRUD de Proyectos + Roles + Autorización
-- [x] **Fase 4:** CRUD de Columnas
-- [x] **Fase 5:** CRUD de Tareas + Move + Assign
-- [x] **Fase 6:** SignalR (tiempo real)
-- [ ] **Fase 7:** Frontend React + TypeScript
-- [ ] **Fase 8:** Tests con xUnit
-- [ ] **Fase 9:** Docker + CI/CD + Deploy
+- [x] **Phase 1:** Setup + Clean Architecture
+- [x] **Phase 2:** Authentication (Register + Login + JWT)
+- [x] **Phase 3:** Projects CRUD + Roles + Authorization
+- [x] **Phase 4:** Columns CRUD
+- [x] **Phase 5:** Tasks CRUD + Move + Assign
+- [x] **Phase 6:** SignalR (real-time)
+- [x] **Phase 7:** Unit tests with xUnit + Moq
+- [x] **Phase 8:** Docker + Docker Compose
+- [ ] **Phase 9:** CI/CD with GitHub Actions
+- [ ] **Phase 10:** Cloud deploy (Azure / Railway)
+- [ ] **Phase 11:** Frontend with React + TypeScript
 
 ---
 
-## 👤 Autor
+## 👤 Author
 
 **Lalo Acevedo**
 - GitHub: [@JacevedoEspindola](https://github.com/JacevedoEspindola)
 
 ---
 
-## 📄 Licencia
+## 📄 License
 
-Este proyecto está bajo la licencia MIT. Ver [`LICENSE`](LICENSE) para más detalles.
----
-
+This project is licensed under the MIT License. See the [`LICENSE`](LICENSE) file for details.

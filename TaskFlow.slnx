@@ -5,4 +5,5 @@
     <Project Path="TaskFlow.Infrastructure/TaskFlow.Infrastructure.csproj" />
   </Folder>
   <Project Path="TaskFlow.Api/TaskFlow.Api.csproj" />
+  <Project Path="tests/TaskFlow.UnitTests/TaskFlow.UnitTests.csproj" Id="6c9794a7-1312-43a4-896e-506091d3ae98" />
 </Solution>

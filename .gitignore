@@ -426,3 +426,10 @@ FodyWeavers.xsd
 
 # Official VS Code C# Dev Kit Extension exclusion
 #*.lscache
+
+# Archivos grandes / instaladores
+*.exe
+*.msi
+*.dmp
+*.trace
+**/Docker Desktop Installer.exe

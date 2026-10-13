@@ -9,17 +9,14 @@ public class UpdateTaskCommandValidator : AbstractValidator<UpdateTaskCommand>
 {
     public UpdateTaskCommandValidator()
     {
-        RuleFor(x => x.TaskId).NotEmpty();
-
+        RuleFor(x => x.TaskId).NotEmpty().WithMessage("Task id is required.");
         RuleFor(x => x.Title)
-            .NotEmpty().WithMessage("El título es obligatorio.")
-            .MinimumLength(2).WithMessage("Debe tener al menos 2 caracteres.")
-            .MaximumLength(200).WithMessage("No puede superar los 200 caracteres.");
-
+            .NotEmpty().WithMessage("Task title is required.")
+            .MinimumLength(2).WithMessage("Task title must be at least 2 characters.")
+            .MaximumLength(200).WithMessage("Task title cannot exceed 200 characters.");
         RuleFor(x => x.Description)
-            .MaximumLength(2000)
+            .MaximumLength(2000).WithMessage("Description cannot exceed 2000 characters.")
             .When(x => !string.IsNullOrWhiteSpace(x.Description));
-
-        RuleFor(x => x.Priority).IsInEnum();
+        RuleFor(x => x.Priority).IsInEnum().WithMessage("Priority is invalid.");
     }
 }

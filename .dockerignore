@@ -1,0 +1,14 @@
+**/bin/
+**/obj/
+**/.vs/
+**/.vscode/
+**/.git/
+**/.gitignore
+**/node_modules/
+**/TestResults/
+**/coverage-report/
+**/*.user
+**/appsettings.Development.json
+README.md
+docs/
+LICENSE
