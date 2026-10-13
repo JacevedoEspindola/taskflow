@@ -8,9 +8,10 @@ Gestor de proyectos y tareas tipo Trello/Notion, construido con **.NET 10** apli
 [![SQL Server](https://img.shields.io/badge/SQL%20Server-2022-CC2927?logo=microsoftsqlserver)](https://www.microsoft.com/sql-server)
 [![SignalR](https://img.shields.io/badge/SignalR-Realtime-512BD4?logo=dotnet)](https://dotnet.microsoft.com/apps/aspnet/signalr)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker)](https://www.docker.com/)
+[![CI](https://github.com/JacevedoEspindola/taskflow/actions/workflows/ci.yml/badge.svg)](https://github.com/JacevedoEspindola/taskflow/actions/workflows/ci.yml)
+[![Docker Build](https://github.com/JacevedoEspindola/taskflow/actions/workflows/docker.yml/badge.svg)](https://github.com/JacevedoEspindola/taskflow/actions/workflows/docker.yml)
 [![Tests](https://img.shields.io/badge/tests-27%20passed-success)](https://github.com/JacevedoEspindola/taskflow)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
 ---
 
 ## 📋 Tabla de contenidos
