@@ -101,7 +101,25 @@ builder.Services.AddSignalR();
 builder.Services.AddScoped<IRealTimeNotifier, SignalRNotifier>();
 
 // ============================================
-// 7. SWAGGER + OPENAPI
+// 7. CORS (para el frontend)
+// ============================================
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("FrontendPolicy", policy =>
+    {
+        policy
+            .WithOrigins(
+                "http://localhost:5173",      // Vite dev
+                "http://localhost:3000",      // alternativa
+                "https://taskflow-frontend.vercel.app"  // (futuro deploy)
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();              // para SignalR
+    });
+});
+// ============================================
+// 8. SWAGGER + OPENAPI
 // ============================================
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
