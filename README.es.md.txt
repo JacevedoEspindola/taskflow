@@ -1,93 +1,94 @@
 # TaskFlow 🚀
 
+Un gestor de proyectos Kanban estilo Trello, construido con **.NET 10** (Clean Architecture) y **React 19** (TypeScript). Incluye actualizaciones en tiempo real, drag & drop, y está completamente deployado en la nube.
+
 > 🌐 [English](README.md) | **Español**
 
-Gestor de proyectos y tareas tipo Trello/Notion, construido con **.NET 10** aplicando **Clean Architecture**, **CQRS**, **JWT Authentication**, **SignalR** para tiempo real, y totalmente **Dockerizado**.
+### 🔗 Demo en Vivo
+- **Frontend (App):** [https://taskflow-web-ecru.vercel.app](https://taskflow-web-ecru.vercel.app)
+- **Backend (API):** [https://taskflow-api.wonderfulfield-f29193ab.westus2.azurecontainerapps.io/swagger](https://taskflow-api.wonderfulfield-f29193ab.westus2.azurecontainerapps.io/swagger)
+
+**Credenciales de Prueba:**
+- **Email:** `prubafront@prueba.com`
+- **Password:** `Password123` *(o la que hayas usado)*
 
 [![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev/)
 [![SQL Server](https://img.shields.io/badge/SQL%20Server-2022-CC2927?logo=microsoftsqlserver)](https://www.microsoft.com/sql-server)
-[![SignalR](https://img.shields.io/badge/SignalR-Realtime-512BD4?logo=dotnet)](https://dotnet.microsoft.com/apps/aspnet/signalr)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker)](https://www.docker.com/)
-[![CI](https://github.com/JacevedoEspindola/taskflow/actions/workflows/ci.yml/badge.svg)](https://github.com/JacevedoEspindola/taskflow/actions/workflows/ci.yml)
-[![Docker Build](https://github.com/JacevedoEspindola/taskflow/actions/workflows/docker.yml/badge.svg)](https://github.com/JacevedoEspindola/taskflow/actions/workflows/docker.yml)
-[![Tests](https://img.shields.io/badge/tests-27%20passed-success)](https://github.com/JacevedoEspindola/taskflow)
+[![Vercel](https://img.shields.io/badge/Vercel-Deployed-000000?logo=vercel)](https://vercel.com/)
+[![Azure](https://img.shields.io/badge/Azure-Deployed-0078D4?logo=microsoftazure)](https://azure.microsoft.com/)
+[![Tests](https://img.shields.io/badge/tests-27%20passed-success)](https://github.com/JacevedoEspindola/taskflow/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 ---
 
-## 📋 Tabla de contenidos
+## 📋 Tabla de Contenidos
 
-- [Sobre el proyecto](#-sobre-el-proyecto)
-- [Stack tecnológico](#️-stack-tecnológico)
+- [Sobre el Proyecto](#-sobre-el-proyecto)
+- [Stack Tecnológico](#-stack-tecnológico)
 - [Arquitectura](#️-arquitectura)
 - [Funcionalidades](#-funcionalidades)
 - [Testing](#-testing)
-- [Docker](#-docker)
 - [Screenshots](#-screenshots)
-- [Cómo correrlo](#-cómo-correrlo)
+- [Cómo Correrlo](#-cómo-correrlo)
 - [API Endpoints](#-api-endpoints)
-- [Roadmap](#️-roadmap)
+- [Despliegue](#-despliegue)
 - [Autor](#-autor)
 
 ---
 
-## 🎯 Sobre el proyecto
+## 🎯 Sobre el Proyecto
 
-TaskFlow es una API REST que permite gestionar proyectos, columnas y tareas al estilo Kanban (como Trello). El objetivo del proyecto es demostrar buenas prácticas de desarrollo backend con .NET:
+TaskFlow es un tablero Kanban full-stack (como Trello) que permite a los equipos gestionar proyectos, columnas y tareas en tiempo real.
 
-- **Clean Architecture** con separación estricta de responsabilidades.
-- **CQRS** con MediatR para casos de uso desacoplados.
-- **FluentValidation** con pipeline automático.
-- **JWT** para autenticación stateless.
-- **BCrypt** para hashing seguro de contraseñas.
-- **SignalR** para notificaciones en tiempo real.
-- **Entity Framework Core** con configuraciones Fluent API.
-- **Roles y permisos** por proyecto (Owner, Admin, Member).
-- **Tests unitarios** con xUnit, Moq y FluentAssertions.
-- **Totalmente Dockerizado** con multi-stage builds y docker-compose.
+El objetivo principal de este proyecto fue construir una **aplicación lista para producción** aplicando patrones de nivel empresarial y buenas prácticas, en lugar de un simple CRUD.
+
+### Puntos Clave:
+- **Clean Architecture & CQRS:** Separación de responsabilidades usando MediatR.
+- **Colaboración en tiempo real:** Impulsado por SignalR (WebSockets).
+- **Optimistic UI updates:** El drag & drop se siente instantáneo.
+- **Cloud Native:** Backend dockerizado deployado en Azure, frontend en Vercel.
+- **Test Driven:** 27 tests unitarios cubriendo la lógica de negocio crítica.
 
 ---
 
-## 🛠️ Stack tecnológico
+## 🛠️ Stack Tecnológico
 
 ### Backend
-| Tecnología | Uso |
+| Tecnología | Propósito |
 |---|---|
 | **.NET 10** | Framework principal |
 | **ASP.NET Core Minimal APIs** | Endpoints HTTP |
-| **Entity Framework Core 10** | ORM |
-| **SQL Server 2022** | Base de datos |
+| **Entity Framework Core 10** | ORM y Migraciones |
+| **Azure SQL Database** | Base de datos relacional |
 | **MediatR** | Patrón CQRS |
-| **FluentValidation** | Validación de comandos |
-| **JWT** | Autenticación |
-| **BCrypt.Net-Next** | Hash de contraseñas |
-| **SignalR** | Tiempo real (WebSockets) |
-| **Swagger / OpenAPI** | Documentación de la API |
+| **FluentValidation** | Validación de requests |
+| **JWT & BCrypt** | Autenticación y hash de contraseñas |
+| **SignalR** | WebSockets en tiempo real |
+| **xUnit, Moq, FluentAssertions** | Tests unitarios |
+| **Docker & Azure Container Apps** | Hosting y Despliegue |
+| **GitHub Actions** | Pipeline CI/CD |
 
-### Testing
-| Tecnología | Uso |
+### Frontend
+| Tecnología | Propósito |
 |---|---|
-| **xUnit** | Framework de testing |
-| **Moq** | Mocking de dependencias |
-| **FluentAssertions** | Assertions legibles |
-| **EF Core InMemory** | Base de datos en memoria |
-| **Coverlet** | Cobertura de código |
-
-### DevOps
-| Tecnología | Uso |
-|---|---|
-| **Docker** | Contenedores |
-| **Docker Compose** | Orquestación multi-contenedor |
-
-### Próximamente
-- **React + TypeScript** (frontend)
-- **GitHub Actions** (CI/CD)
-- **Deploy en la nube** (Azure / Railway)
+| **React 19 & TypeScript** | Librería de UI |
+| **Vite** | Build tool |
+| **Tailwind CSS** | Estilos |
+| **React Router** | Ruteo |
+| **TanStack Query** | Fetching de datos y caché |
+| **Zustand** | Manejo de estado global |
+| **React Hook Form & Zod** | Formularios y validación |
+| **@dnd-kit** | Funcionalidad drag & drop |
+| **@microsoft/signalr** | Cliente en tiempo real |
+| **Vercel** | Hosting y Despliegue |
 
 ---
 
 ## 🏛️ Arquitectura
 
-El proyecto sigue **Clean Architecture**, con las dependencias apuntando siempre hacia el centro:
+El backend sigue **Clean Architecture**, con las dependencias apuntando hacia el centro:
 
 ```
 ┌─────────────────────────────────────────┐
@@ -101,37 +102,15 @@ El proyecto sigue **Clean Architecture**, con las dependencias apuntando siempre
 └─────────────────────────────────────────┘
 ```
 
-### Estructura de carpetas
-
+### Estructura de Carpetas
 ```
 TaskFlow/
-├── TaskFlow.Domain/
-│   └── Entities/                → User, Project, ProjectMember, BoardColumn, TaskItem
-│
-├── TaskFlow.Application/
-│   ├── Common/
-│   │   ├── Behaviors/           → ValidationBehavior (FluentValidation)
-│   │   └── Interfaces/          → IApplicationDbContext, IJwtService,
-│   │                              IPasswordHasher, ICurrentUserService, IRealTimeNotifier
-│   └── Features/
-│       ├── Auth/                → Register + Login
-│       ├── Projects/            → CRUD de proyectos
-│       ├── Columns/             → CRUD de columnas
-│       └── Tasks/               → CRUD de tareas + Move + Assign
-│
-├── TaskFlow.Infrastructure/
-│   ├── Authentication/          → JwtService, PasswordHasher, JwtSettings
-│   ├── Persistence/             → ApplicationDbContext + Configurations
-│   ├── RealTime/                → NotificationHub, SignalRNotifier
-│   └── Services/                → CurrentUserService
-│
-├── TaskFlow.Api/
-│   ├── Endpoints/               → Auth, Projects, Columns, Tasks
-│   ├── Middleware/              → ExceptionHandlingMiddleware
-│   └── wwwroot/                 → live.html (cliente SignalR de prueba)
-│
-└── tests/
-    └── TaskFlow.UnitTests/      → tests con xUnit (27 tests)
+├── TaskFlow.Domain/              → Entidades (User, Project, Task, etc.)
+├── TaskFlow.Application/         → Handlers CQRS, Validadores, Interfaces
+├── TaskFlow.Infrastructure/      → EF Core, Auth, SignalR, Repositorios
+├── TaskFlow.Api/                 → Minimal APIs, Middlewares, DI
+├── tests/TaskFlow.UnitTests/     → 27 Tests unitarios
+└── docker-compose.yml            → Configuración de infraestructura local
 ```
 
 ---
@@ -139,303 +118,147 @@ TaskFlow/
 ## ✅ Funcionalidades
 
 ### Autenticación
-- [x] Registro de usuarios con validación
-- [x] Login con generación de JWT
-- [x] Hash de contraseñas con BCrypt
-- [x] Validación automática con FluentValidation
-- [x] Manejo global de excepciones con respuestas JSON estructuradas
+- [x] Registro e inicio de sesión con JWT.
+- [x] Hash seguro de contraseñas con BCrypt.
+- [x] Middleware de manejo global de excepciones.
+- [x] Validación automática de requests con FluentValidation.
 
-### Proyectos
-- [x] CRUD completo de proyectos
-- [x] Autorización por roles (Owner, Admin, Member)
-- [x] Columnas por defecto (To Do, In Progress, Done) al crear
-- [x] Solo miembros del proyecto pueden verlo/editar
+### Proyectos y Roles
+- [x] CRUD completo de Proyectos.
+- [x] Control de acceso basado en roles (Owner, Admin, Member).
+- [x] Solo los miembros pueden ver/editar proyectos específicos.
+- [x] Columnas por defecto autogeneradas (To Do, In Progress, Done).
 
-### Columnas
-- [x] CRUD completo de columnas
-- [x] Posicionamiento y reordenamiento
-- [x] Solo Owners/Admins pueden modificar
+### Columnas y Tareas
+- [x] CRUD completo de Columnas y Tareas.
+- [x] Prioridades de tareas (Low, Medium, High, Critical) y fechas límite.
+- [x] Mover tareas entre columnas (Drag & Drop).
+- [x] Asignar tareas a miembros del proyecto.
 
-### Tareas
-- [x] CRUD completo de tareas
-- [x] Prioridades (Low, Medium, High, Critical)
-- [x] Fecha límite opcional
-- [x] **Mover tareas entre columnas** (drag & drop backend)
-- [x] **Asignar tareas a miembros** del proyecto
-- [x] Posicionamiento dentro de columnas
-
-### Tiempo real (SignalR)
-- [x] Notificaciones al crear/mover/asignar tareas
-- [x] Grupos por proyecto (solo miembros reciben eventos)
-- [x] Autenticación JWT en el hub
-- [x] Cliente HTML de prueba (`/live.html`)
+### Tiempo Real y UX
+- [x] **SignalR:** Actualizaciones instantáneas entre múltiples pestañas.
+- [x] **Optimistic UI:** Feedback instantáneo en drag & drop (sin estados de carga).
+- [x] UI moderna y responsive construida con Tailwind CSS.
 
 ---
 
 ## 🧪 Testing
 
-El proyecto incluye **27 tests unitarios** con xUnit, Moq y FluentAssertions, cubriendo la lógica de negocio crítica.
-
-### Ejecutar los tests
+El backend incluye **27 tests unitarios** cubriendo validadores, handlers de auth, creación de proyectos y la lógica compleja de mover tareas.
 
 ```bash
 dotnet test
 ```
 
-### Cobertura
-
-| Módulo | Tests |
-|---|---|
-| **Auth** | Validadores de Register/Login, `RegisterCommandHandler`, `LoginCommandHandler` |
-| **Projects** | `CreateProjectCommandHandler` |
-| **Columns** | `CreateColumnCommandHandler` |
-| **Tasks** | `MoveTaskCommandHandler` (reordenamiento, SignalR, validaciones) |
-
-### Test de ejemplo
-
-```csharp
-[Fact]
-public async Task Should_Move_Task_To_Target_Column_When_Target_Is_Different()
-{
-    var (db, _, _, inProgressColumnId, taskId) = await SeedScenarioAsync();
-    var handler = new MoveTaskCommandHandler(db, _currentUserMock.Object, _notifierMock.Object);
-    var command = new MoveTaskCommand(taskId, inProgressColumnId, Position: null);
-
-    var result = await handler.Handle(command, CancellationToken.None);
-
-    result.ColumnId.Should().Be(inProgressColumnId);
-    result.ColumnName.Should().Be("In Progress");
-}
-```
-
-### Resultado
-
-![Tests](docs/tests/01-test-results.png)
-
----
-
-## 🐳 Docker
-
-El proyecto incluye **Dockerfile multi-stage** y **docker-compose** para correr todo el stack (API + SQL Server) con un solo comando.
-
-### Levantar todo
-
-```bash
-docker-compose up --build
-```
-
-La API queda disponible en `http://localhost:8080/swagger`.
-
-### Qué incluye
-
-- **Dockerfile multi-stage** → imagen final ~200 MB (vs ~1 GB con SDK).
-- **SQL Server 2022** en contenedor con health check.
-- **Auto-migración** al arrancar (solo en Development).
-- **Volumen persistente** para datos de SQL Server.
-
-### Docker Compose up
-
-![Docker Compose](docs/docker/01-docker-compose-up.png)
-
-### Swagger corriendo en Docker
-
-![Swagger in Docker](docs/docker/03-swagger-in-docker.png)
+- **Framework:** xUnit
+- **Mocking:** Moq
+- **Assertions:** FluentAssertions
+- **In-Memory DB:** EF Core InMemory
 
 ---
 
 ## 📸 Screenshots
 
-### Swagger UI
+### Frontend (Tablero Kanban)
+![Frontend Board](docs/screenshots/frontend-board.png)
+
+### Swagger UI (API)
 ![Swagger](docs/Swagger.PNG)
 
-### Autenticación
+### Tiempo Real (SignalR en acción)
+![SignalR](docs/signalr/01-live-events.png)
 
-**Register exitoso:**
-![Register](docs/register.PNG)
-
-**Login exitoso:**
-![Login](docs/02-login-success.PNG)
-
-**Usuarios en la base de datos (con password hasheado):**
+### Usuarios en Base de Datos (Contraseñas Hasheadas)
 ![SSMS](docs/ssms-users.PNG)
-
-### CRUD de Proyectos
-
-**Crear proyecto (con columnas automáticas):**
-![Create Project](docs/04-create-project.PNG)
-
-**Listar proyectos:**
-![List Projects](docs/05-list-projects.PNG)
-
-**Detalle de proyecto:**
-![Project Detail](docs/06-project-detail.PNG)
-
-### Tiempo Real (SignalR)
-
-**Eventos en vivo cuando se crean/mueven/asignan tareas:**
-![SignalR Live](docs/signalr/01-live-events.png)
-
-### Estructura del proyecto
-![Estructura](docs/structure.PNG)
 
 ---
 
-## 🚀 Cómo correrlo
+## 🚀 Cómo Correrlo
 
-### Requisitos previos
+### Requisitos Previos
 - [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
-- [SQL Server Express o superior](https://www.microsoft.com/sql-server/sql-server-downloads) *(o usa Docker)*
-- [SQL Server Management Studio (SSMS)](https://aka.ms/ssmsfullsetup) *(opcional)*
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) *(opcional, recomendado)*
+- [Node.js](https://nodejs.org/) (v20+)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
-### Opción 1: Con Docker (recomendado)
-
+### Opción 1: Correr con Docker (Backend)
 ```bash
 git clone https://github.com/JacevedoEspindola/taskflow.git
 cd taskflow
 docker-compose up --build
 ```
+La API estará disponible en `http://localhost:8080/swagger`.
 
-Abre `http://localhost:8080/swagger`.
-
-### Opción 2: Localmente
-
-1. **Clonar el repositorio:**
-   ```bash
-   git clone https://github.com/JacevedoEspindola/taskflow.git
-   cd taskflow
-   ```
-
-2. **Configurar la cadena de conexión** en `TaskFlow.Api/appsettings.json`:
-   ```json
-   "ConnectionStrings": {
-     "DefaultConnection": "Server=localhost\\SQLEXPRESS;Database=TaskFlowDb;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true"
-   }
-   ```
-
-3. **Configurar el JWT Secret** en `TaskFlow.Api/appsettings.json`:
-   ```json
-   "Jwt": {
-     "Secret": "TaskFlow-Super-Secret-Key-For-Development-Only-Min-32-Chars-Long!!",
-     "Issuer": "TaskFlowAPI",
-     "Audience": "TaskFlowClient",
-     "ExpirationMinutes": 60
-   }
-   ```
-
-4. **Aplicar migraciones:**
+### Opción 2: Correr Localmente (Backend)
+1. Configurá tu cadena de conexión en `TaskFlow.Api/appsettings.json`.
+2. Aplicá las migraciones:
    ```bash
    dotnet ef database update -p TaskFlow.Infrastructure -s TaskFlow.Api
    ```
-
-5. **Correr la API:**
+3. Corré la API:
    ```bash
    dotnet run --project TaskFlow.Api
    ```
 
-6. **Abrir Swagger:**
-   ```
-   https://localhost:7236/swagger
-   ```
+### Correr el Frontend
+```bash
+# Clonar el repo del frontend (link abajo)
+git clone https://github.com/JacevedoEspindola/taskflow-web.git
+cd taskflow-web
+npm install
+npm run dev
+```
+El frontend estará disponible en `http://localhost:5173`.
 
 ---
 
 ## 📡 API Endpoints
 
 ### Auth
-| Método | Ruta | Descripción |
-|---|---|---|
-| `POST` | `/api/auth/register` | Registrar usuario |
-| `POST` | `/api/auth/login` | Login (devuelve JWT) |
+- `POST /api/auth/register` — Registrar un nuevo usuario.
+- `POST /api/auth/login` — Iniciar sesión y recibir un JWT.
 
-### Projects
-| Método | Ruta | Descripción |
-|---|---|---|
-| `GET` | `/api/projects` | Listar mis proyectos |
-| `POST` | `/api/projects` | Crear proyecto |
-| `GET` | `/api/projects/{id}` | Ver detalle |
-| `PUT` | `/api/projects/{id}` | Editar (Owner/Admin) |
-| `DELETE` | `/api/projects/{id}` | Eliminar (Owner/Admin) |
+### Proyectos
+- `GET /api/projects` — Listar proyectos del usuario.
+- `POST /api/projects` — Crear un proyecto.
+- `GET /api/projects/{id}` — Obtener detalles del proyecto.
+- `PUT /api/projects/{id}` — Actualizar proyecto.
+- `DELETE /api/projects/{id}` — Eliminar proyecto.
 
-### Columns
-| Método | Ruta | Descripción |
-|---|---|---|
-| `GET` | `/api/projects/{projectId}/columns` | Listar columnas |
-| `POST` | `/api/projects/{projectId}/columns` | Crear columna |
-| `PUT` | `/api/projects/{projectId}/columns/{id}` | Editar / Reordenar |
-| `DELETE` | `/api/projects/{projectId}/columns/{id}` | Eliminar |
-
-### Tasks
-| Método | Ruta | Descripción |
-|---|---|---|
-| `GET` | `/api/columns/{columnId}/tasks` | Tareas de una columna |
-| `POST` | `/api/columns/{columnId}/tasks` | Crear tarea |
-| `GET` | `/api/tasks/{id}` | Detalle de tarea |
-| `PUT` | `/api/tasks/{id}` | Editar tarea |
-| `PATCH` | `/api/tasks/{id}/move` | **Mover entre columnas** |
-| `PATCH` | `/api/tasks/{id}/assign` | **Asignar usuario** |
-| `DELETE` | `/api/tasks/{id}` | Eliminar tarea |
+### Columnas y Tareas
+- `GET /api/projects/{projectId}/columns` — Listar columnas.
+- `POST /api/columns/{columnId}/tasks` — Crear una tarea.
+- `PATCH /api/tasks/{id}/move` — Mover tarea a otra columna.
+- `PATCH /api/tasks/{id}/assign` — Asignar tarea a un usuario.
 
 ### SignalR
-| Ruta | Descripción |
-|---|---|
-| `/hubs/notifications` | Hub de tiempo real (requiere JWT) |
-
-**Eventos emitidos:**
-- `TaskCreated` — al crear una tarea
-- `TaskMoved` — al mover una tarea entre columnas
-- `TaskAssigned` — al asignar/cambiar el asignado
-
-### Probar la autenticación
-
-**Registro:**
-```http
-POST /api/auth/register
-Content-Type: application/json
-
-{
-  "email": "user@test.com",
-  "password": "Password123",
-  "fullName": "Test User"
-}
-```
-
-**Login:**
-```http
-POST /api/auth/login
-Content-Type: application/json
-
-{
-  "email": "user@test.com",
-  "password": "Password123"
-}
-```
+- `/hubs/notifications` — Hub de WebSockets para actualizaciones en tiempo real.
 
 ---
 
-## 🗺️ Roadmap
+## ☁️ Despliegue y CI/CD
 
-- [x] **Fase 1:** Setup + Clean Architecture
-- [x] **Fase 2:** Autenticación (Register + Login + JWT)
-- [x] **Fase 3:** CRUD de Proyectos + Roles + Autorización
-- [x] **Fase 4:** CRUD de Columnas
-- [x] **Fase 5:** CRUD de Tareas + Move + Assign
-- [x] **Fase 6:** SignalR (tiempo real)
-- [x] **Fase 7:** Tests unitarios con xUnit + Moq
-- [x] **Fase 8:** Docker + Docker Compose
-- [ ] **Fase 9:** CI/CD con GitHub Actions
-- [ ] **Fase 10:** Deploy en la nube (Azure / Railway)
-- [ ] **Fase 11:** Frontend con React + TypeScript
+- **Backend:** Deployado en **Azure Container Apps** usando un Dockerfile multi-stage. Las imágenes se suben a **Azure Container Registry (ACR)**.
+- **Base de Datos:** Alojada en **Azure SQL Database** (tier Serverless para optimizar costos).
+- **Frontend:** Deployado en **Vercel** con despliegues automáticos desde la rama `main`.
+- **CI/CD:** **GitHub Actions** corre los tests en cada push y asegura que la imagen Docker se construya correctamente.
+
+> ⚠️ **Aviso de Cold Start:** Como este es un proyecto de portfolio usando tiers gratuitos/serverless, la API y la base de datos pueden tardar **30-40 segundos** en responder en la primera request después de un período largo de inactividad. Las siguientes requests son rápidas.
+
+---
+
+## 🔗 Repositorios Relacionados
+
+- **Repositorio del Frontend:** [taskflow-web](https://github.com/JacevedoEspindola/taskflow-web)
 
 ---
 
 ## 👤 Autor
 
-**Lalo Acevedo**
+**Jose Acevedo**
 - GitHub: [@JacevedoEspindola](https://github.com/JacevedoEspindola)
 
 ---
 
 ## 📄 Licencia
 
-Este proyecto está bajo la licencia MIT. Ver [`LICENSE`](LICENSE) para más detalles.
+Este proyecto está bajo la licencia MIT. Ver el archivo [`LICENSE`](LICENSE) para más detalles.
