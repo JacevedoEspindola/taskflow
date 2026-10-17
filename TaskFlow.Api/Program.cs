@@ -111,7 +111,8 @@ builder.Services.AddCors(options =>
             .WithOrigins(
                 "http://localhost:5173",      // Vite dev
                 "http://localhost:3000",      // alternativa
-                "https://taskflow-frontend.vercel.app"  // (futuro deploy)
+                "https://taskflow-frontend.vercel.app", // (futuro deploy)
+                "https://taskflow-web-ecnu.vercel.app"
             )
             .AllowAnyHeader()
             .AllowAnyMethod()
